@@ -1,7 +1,9 @@
 
 import createClient from '@/lib/supabase/server'
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { TenantType } from '../types/supabaseTypes'
+import Projects from './components/projects/Projects'
+import ProfileHeader from './components/ProfileHeader'
 
 interface PortfolioPageProps {
     params: Promise<{
@@ -27,19 +29,12 @@ const PortfolioPage: FC<PortfolioPageProps> = async ({ params }) => {
 
     return (
         <div>
-            <h1>{typedTenant.name}</h1>
-            <p>{typedTenant.role}</p>
-            <p>{typedTenant.bio}</p>
-            <p>{typedTenant.location}</p>
+            <ProfileHeader tenant={typedTenant} />
 
             <hr />
 
             <h2>Projects</h2>
-            {typedTenant.content_entries.map((entry) => (
-                <div key={entry.id}>
-                    <pre>{JSON.stringify(entry.fields, null, 2)}</pre>
-                </div>
-            ))}
+            <Projects schemas={typedTenant.content_schemas} entries={typedTenant.content_entries} />
         </div>
     )
 }

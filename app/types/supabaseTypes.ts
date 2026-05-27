@@ -12,6 +12,7 @@ export interface ContentSchemaType {
   name: string;
   fields: Record<string, unknown>[];
   created_at: string;
+  type: string;
 }
 
 export interface TenantType {
