@@ -3,6 +3,7 @@ import createClient from '@/lib/supabase/server'
 import { SignOutButton } from '@clerk/nextjs'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import { ContentSchemaType } from '../types/supabaseTypes'
 
 const DashboardPage = async () => {
     const { userId } = await auth()
@@ -15,7 +16,7 @@ const DashboardPage = async () => {
 
     const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('*')
+        .select('* , content_schemas(*)')
         .eq('clerk_id', userId)
         .single()
 
@@ -28,6 +29,21 @@ const DashboardPage = async () => {
             <h1>Welcome back, {tenant.name}!</h1>
             <h1>username: {tenant.username}</h1>
             <p>{tenant.role}</p>
+
+            <hr />
+            {tenant.content_schemas?.length === 0 ? (
+                <p>No schemas yet. <a href="/dashboard/schemas/new">Create one</a></p>
+            ) : (
+                tenant.content_schemas?.map((schema: ContentSchemaType) => (
+                    <div key={schema.id} className='flex gap-3'>
+                        <p>{schema.name ? schema.name : "No name"}</p>
+                        <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
+                    </div>
+                ))
+            )}
+
+            <a href="/dashboard/schemas/new">Create New Schema</a>
+
             <SignOutButton>
                 <button>Sign Out</button>
             </SignOutButton>

@@ -1,3 +1,9 @@
+export interface SchemaField {
+  name: string;
+  type: "text" | "url" | "tags" | "boolean";
+  required: boolean;
+}
+
 export interface ContentEntryType {
   id: string;
   tenant_id: string;
