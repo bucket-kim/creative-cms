@@ -11,6 +11,14 @@ interface FieldRendererProps {
 const FieldRenderer: FC<FieldRendererProps> = ({ fieldKey, type, value }) => {
 
     switch (type) {
+        default:
+            return (
+                <div key={fieldKey}>
+                    <p>{value}</p>
+                    <span>{value}</span>
+                </div>
+            )
+            break;
         case "url":
             return (
                 <div key={fieldKey}>

@@ -9,7 +9,6 @@ export default async function Home() {
     return <div>Error: {error.message}</div>
   }
 
-  console.log(data)
 
   return (
     <div>
