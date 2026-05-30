@@ -9,11 +9,6 @@ interface FieldRendererProps {
 }
 
 const FieldRenderer: FC<FieldRendererProps> = ({ fieldKey, type, value }) => {
-
-    console.log(fieldKey)
-    console.log(value)
-    console.log(type)
-
     switch (type) {
         default:
             return (

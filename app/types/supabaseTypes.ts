@@ -1,6 +1,8 @@
+export type FieldTypes = "text" | "url" | "tags" | "boolean";
+
 export interface SchemaField {
   name: string;
-  type: "text" | "url" | "tags" | "boolean";
+  type: FieldTypes;
   required: boolean;
 }
 
@@ -16,7 +18,8 @@ export interface ContentSchemaType {
   id: string;
   tenant_id: string;
   name: string;
-  fields: Record<string, unknown>[];
+  fields: SchemaField[];
+  content_entries?: { id: string }[];
   created_at: string;
   type: string;
 }

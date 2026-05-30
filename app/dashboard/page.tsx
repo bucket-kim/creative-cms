@@ -16,7 +16,7 @@ const DashboardPage = async () => {
 
     const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('* , content_schemas(*)')
+        .select('* , content_schemas(*), content_entries(id)')
         .eq('clerk_id', userId)
         .single()
 
@@ -30,6 +30,8 @@ const DashboardPage = async () => {
             <h1>username: {tenant.username}</h1>
             <p>{tenant.role}</p>
 
+            <a href={`/${tenant.username}`} > View my portfolio ↗</a>
+
             <hr />
             {tenant.content_schemas?.length === 0 ? (
                 <p>No schemas yet. <a href="/dashboard/schemas/new">Create one</a></p>
@@ -37,7 +39,12 @@ const DashboardPage = async () => {
                 tenant.content_schemas?.map((schema: ContentSchemaType) => (
                     <div key={schema.id} className='flex gap-3'>
                         <p>{schema.name ? schema.name : "No name"}</p>
-                        <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
+                        {schema.content_entries?.length === 0 && (
+
+                            <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
+                        )}
+                        <a href={`/dashboard/schemas/${schema.id}/edit`}>Edit Schema</a>
+                        <a href={`/dashboard/schemas/${schema.id}/entries`}>View Entries</a>
                     </div>
                 ))
             )}

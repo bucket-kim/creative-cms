@@ -1,30 +1,32 @@
 'use client'
 
-import { saveSchema } from './actions'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { ContentSchemaType, SchemaField } from "@/app/types/supabaseTypes"
+import { FC, useState } from "react"
+import { useRouter } from "next/navigation"
+import { updateSchema } from "./actions"
 
-interface SchemaField {
-    name: string
-    type: 'text' | 'url' | 'tags' | 'boolean'
-    required: boolean
+interface EditSchemaFormProps {
+    schema: ContentSchemaType
 }
 
-const NewSchema = () => {
+const EditSchemaForm: FC<EditSchemaFormProps> = ({ schema }) => {
 
-    const router = useRouter()
-
-    const [schemaName, setSchemaName] = useState("")
-    const [fields, setFields] = useState<SchemaField[]>([])
+    const [schemaName, setSchemaName] = useState(schema.name)
+    const [fields, setFields] = useState<SchemaField[]>(schema.fields)
     const [currentField, setCurrentField] = useState<SchemaField>({
-        name: '',
+        name: "",
         type: "text",
         required: false
     })
+    const [removedFields, setRemovedFields] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
+    const router = useRouter()
+
     const removeIndex = (index: number) => {
+        const removedFieldName = fields[index].name
+        setRemovedFields(prev => [...prev, removedFieldName])
         setFields((prev) => prev.filter((_, i) => i !== index))
     }
 
@@ -37,12 +39,12 @@ const NewSchema = () => {
         })
     }
 
-    const handleSave = async () => {
+    const handleEdit = async () => {
 
         setLoading(true)
         setError("")
 
-        const result = await saveSchema(schemaName, fields)
+        const result = await updateSchema(schema.id, schemaName, fields, removedFields)
 
         if (result.error) {
             setError(result.error)
@@ -50,14 +52,8 @@ const NewSchema = () => {
             return
         }
 
-        // reset all state after successful save
-        setSchemaName("")
-        setFields([])
-        setCurrentField({ name: "", type: "text", required: false })
-        setLoading(false)
 
-
-        router.push('/dashboard')
+        router.push(`/dashboard/schemas/${schema.id}/entries`)
     }
 
     return (
@@ -91,7 +87,7 @@ const NewSchema = () => {
                 <button onClick={() => addField()}>Add Field</button>
             </div>
             {fields.length > 0 && fields.map((field, index) => (
-                <div key={index}>
+                <div key={index} className="flex gap-4">
                     <span>{field.name}</span>
                     <span>{field.type}</span>
                     <button onClick={() => removeIndex(index)}>Remove</button>
@@ -99,11 +95,11 @@ const NewSchema = () => {
             ))}
             {error && <p>{error}</p>}
 
-            <button style={{ cursor: "pointer" }} onClick={() => handleSave()} disabled={loading}>
-                {loading ? "Saving..." : "Add Details"}
+            <button style={{ cursor: "pointer" }} onClick={() => handleEdit()} disabled={loading}>
+                {loading ? "Saving..." : "Edit Details"}
             </button>
         </div>
     )
 }
 
-export default NewSchema
+export default EditSchemaForm

@@ -1,7 +1,7 @@
 'use client'
 
 import { SchemaField } from '@/app/types/supabaseTypes';
-import { createClient } from '@/lib/supabase/client';
+import { saveEntry } from './actions';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react'
 
@@ -12,18 +12,18 @@ interface EntryFormProps {
 }
 
 const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
-
     const router = useRouter()
 
     const [formData, setFormData] = useState<Record<string, string>>({})
     const [loading, setLoading] = useState(false)
-    const [errorInsert, setErrorInsert] = useState("")
+    const [error, setError] = useState('')
 
     const InputFormmat = (field: SchemaField) => {
         switch (field.type) {
             case "url":
                 return (
                     <input
+                        value={formData[field.name] || ''}
                         onChange={(e) => setFormData(prev => ({
                             ...prev,
                             [field.name]: e.target.value  // use field.name as key
@@ -34,6 +34,7 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
             case "boolean":
                 return (
                     <input
+                        checked={formData[field.name] === 'true'}
                         type='checkbox'
                         onChange={(e) => setFormData(prev => ({
                             ...prev,
@@ -44,6 +45,7 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
             case "tags":
                 return (
                     <input
+                        value={formData[field.name] || ''}
                         onChange={(e) => setFormData(prev => ({
                             ...prev,
                             [field.name]: e.target.value
@@ -54,6 +56,7 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
             default:
                 return (
                     <textarea
+                        value={formData[field.name] || ''}
                         onChange={(e) => setFormData(prev => ({
                             ...prev,
                             [field.name]: e.target.value
@@ -66,30 +69,19 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
 
     const handleSave = async () => {
         setLoading(true)
-        setErrorInsert("")
+        setError('')
 
-        const supabase = createClient()
+        const result = await saveEntry(schemaId, tenantId, formData)
 
-        console.log("tenant: ", tenantId)
-        console.log("schema id: ", schemaId)
-
-        const { error } = await supabase.from("content_entries").insert({
-            tenant_id: tenantId,
-            content_schema_id: schemaId,
-            fields: formData
-        })
-
-        console.log("insert error: ", error);
-
-        if (error) {
-            setErrorInsert(error.message)
+        if (result.error) {
+            setError(result.error)
             setLoading(false)
             return
         }
 
-        router.push('/dashboard')
-
-        return { success: true };
+        setFormData({})
+        setLoading(false)
+        // router.push('/dashboard')
     }
 
 
@@ -101,7 +93,10 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
                     {InputFormmat(field)}
                 </div>
             ))}
-            <button disabled={loading} onClick={() => handleSave()}>Insert Entries</button>
+            {error && <p>{error}</p>}
+            <button className='cursor-pointer' type='button' disabled={loading} onClick={() => handleSave()}>
+                {loading ? 'Saving...' : 'Insert Entries'}
+            </button>
         </div>
     )
 }

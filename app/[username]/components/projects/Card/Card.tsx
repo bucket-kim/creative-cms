@@ -19,6 +19,7 @@ const Card: FC<CardProps> = ({ entry, schemas }) => {
                     const name = String((schemaField as { name: string }).name);
                     const type = String((schemaField as { type: string }).type);
                     const value = String(entry.fields[name] ?? "");
+                    if (!value) return null
                     return (
                         <FieldRenderer key={name} fieldKey={name} type={type} value={value} />
                     )
