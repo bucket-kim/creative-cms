@@ -2,7 +2,6 @@
 
 import { SchemaField } from '@/app/types/supabaseTypes';
 import { saveEntry } from './actions';
-import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react'
 
 interface EntryFormProps {
@@ -12,8 +11,6 @@ interface EntryFormProps {
 }
 
 const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
-    const router = useRouter()
-
     const [formData, setFormData] = useState<Record<string, string>>({})
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
