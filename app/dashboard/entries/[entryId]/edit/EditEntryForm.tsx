@@ -4,6 +4,7 @@ import { ContentEntryType, ContentSchemaType, SchemaField } from '@/app/types/su
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react'
+import TagInput from '../../new/TagInput';
 
 interface EditEntryFormProps {
     entry: ContentEntryType
@@ -45,15 +46,11 @@ const EditEntryForm: FC<EditEntryFormProps> = ({ entry, schema }) => {
                 )
             case "tags":
                 return (
-                    <input
-                        className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
-                        value={formData[field.name]}
-                        onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            [field.name]: e.target.value
-                        }))}
-                        placeholder='e.g. Three.js, WebGL, React'
-                    />
+                    <TagInput value={formData[field.name]} onChange={(value) => setFormData(prev => ({
+                        ...prev,
+                        [field.name]: value
+                    }))} />
+
                 )
             default:
                 return (

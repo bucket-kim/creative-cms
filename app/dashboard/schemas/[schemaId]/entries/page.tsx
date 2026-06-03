@@ -43,7 +43,6 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
                         <Card entry={entry} schemas={[schema as ContentSchemaType]} />
                         <div className='flex gap-4 mt-4'>
                             <a href={`/dashboard/entries/${entry.id}/edit`}>Edit Entry</a>
-                            <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
                             <DeleteEntryButton entryId={entry.id} />
                         </div>
                     </div>

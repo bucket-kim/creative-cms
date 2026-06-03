@@ -3,6 +3,7 @@
 import { SchemaField } from '@/app/types/supabaseTypes';
 import { saveEntry } from './actions';
 import React, { FC, useState } from 'react'
+import TagInput from './TagInput';
 
 interface EntryFormProps {
     fields: SchemaField[]
@@ -41,13 +42,12 @@ const EntryForm: FC<EntryFormProps> = ({ fields, tenantId, schemaId }) => {
                 )
             case "tags":
                 return (
-                    <input
+                    <TagInput
                         value={formData[field.name] || ''}
-                        onChange={(e) => setFormData(prev => ({
+                        onChange={(value) => setFormData(prev => ({
                             ...prev,
-                            [field.name]: e.target.value
+                            [field.name]: value
                         }))}
-                        placeholder='e.g. Three.js, WebGL, React'
                     />
                 )
             default:
