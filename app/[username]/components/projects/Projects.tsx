@@ -1,5 +1,5 @@
 import { ContentEntryType, ContentSchemaType } from '@/app/types/supabaseTypes'
-import React, { FC, Fragment } from 'react'
+import React, { FC } from 'react'
 import Card from './Card/Card';
 
 interface ProjectsProps {
@@ -9,14 +9,13 @@ interface ProjectsProps {
 
 const Projects: FC<ProjectsProps> = ({ schemas, entries }) => {
     return (
-        <Fragment>
-
+        <div className='flex flex-col gap-5'>
             {
                 entries.map((entry) => (
                     <Card key={entry.id} entry={entry} schemas={schemas} />
                 ))
             }
-        </Fragment>
+        </div>
     )
 
 }

@@ -26,13 +26,10 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
         )
     }
 
-    console.log(schema.content_entries)
-
     return (
-        <div>
-            <h1>{schema.name}</h1>
+        <div className='flex flex-col p-8 gap-5'>
             <a href="/dashboard">← Back to dashboard</a>
-            <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
+
 
             {schema.content_entries?.length === 0 ? (
                 <Fragment>
@@ -41,10 +38,12 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
                 </Fragment>
             ) : (
                 schema.content_entries?.map((entry: ContentEntryType) => (
-                    <div key={entry.id}>
+                    <div key={entry.id} className='flex flex-col gap-5'>
+                        <h1 className='font-[family-name:var(--font-display)] text-xl font-semibold text-foreground mb-3'>{schema.name}</h1>
                         <Card entry={entry} schemas={[schema as ContentSchemaType]} />
                         <div className='flex gap-4 mt-4'>
                             <a href={`/dashboard/entries/${entry.id}/edit`}>Edit Entry</a>
+                            <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
                             <DeleteEntryButton entryId={entry.id} />
                         </div>
                     </div>

@@ -24,6 +24,7 @@ const SchemaEdit: FC<SchemaEditProps> = async ({ params }) => {
 
     return (
         <div>
+
             <h1>Edit Schema</h1>
             <EditSchemaForm schema={schema} />
         </div>

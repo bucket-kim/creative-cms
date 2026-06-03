@@ -28,12 +28,12 @@ const PortfolioPage: FC<PortfolioPageProps> = async ({ params }) => {
     const typedTenant = tenant as TenantType
 
     return (
-        <div>
+        <div className='min-h-screen flex flex-col gap-5 px-6 md:px-12 lg:px-24 py-20'>
+            <a href="/dashboard">← Back to dashboard</a>
             <ProfileHeader tenant={typedTenant} />
 
-            <hr />
+            <h2>Creative Spaces</h2>
 
-            <h2>Projects</h2>
             <Projects schemas={typedTenant.content_schemas} entries={typedTenant.content_entries} />
         </div>
     )

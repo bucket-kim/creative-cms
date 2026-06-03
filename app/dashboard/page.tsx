@@ -4,6 +4,8 @@ import { SignOutButton } from '@clerk/nextjs'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { ContentSchemaType } from '../types/supabaseTypes'
+import SchemaCard from './schemas/schema-card'
+import NewSchemaCard from './schemas/new-schema-card'
 
 const DashboardPage = async () => {
     const { userId } = await auth()
@@ -24,36 +26,53 @@ const DashboardPage = async () => {
         redirect('/onboarding')
     }
 
+    const onAdd = (id: string) => {
+        return `/dashboard/entries/new?schemaId=${id}`
+    }
+    const onView = (id: string) => {
+        return `/dashboard/schemas/${id}/entries`
+    }
+
+    const onEdit = (id: string) => {
+        return `/dashboard/schemas/${id}/edit`
+    }
+
     return (
-        <div>
-            <h1>Welcome back, {tenant.name}!</h1>
-            <h1>username: {tenant.username}</h1>
-            <p>{tenant.role}</p>
+        <div className=' min-h-screen'>
 
-            <a href={`/${tenant.username}`} > View my portfolio ↗</a>
+            <main className='px-16 py-16'>
+                <div className='mb-6'>
+                    <h1 className='className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-foreground"'>Welcome back, {tenant.name}!</h1>
+                    <p className='mt-4  inline-block font-mono text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full tracking-wide'>{tenant.role}</p>
+                    <p className='mt-4 text-muted-foreground'>Manage your content schemas and entries</p>
+                </div>
 
-            <hr />
-            {tenant.content_schemas?.length === 0 ? (
-                <p>No schemas yet. <a href="/dashboard/schemas/new">Create one</a></p>
-            ) : (
-                tenant.content_schemas?.map((schema: ContentSchemaType) => (
-                    <div key={schema.id} className='flex gap-3'>
-                        <p>{schema.name ? schema.name : "No name"}</p>
-                        {schema.content_entries?.length === 0 && (
+                <a href={`/${tenant.username}`} > View my portfolio ↗</a>
+                <a href="/dashboard/profile">Edit Profile</a>
 
-                            <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
-                        )}
-                        <a href={`/dashboard/schemas/${schema.id}/edit`}>Edit Schema</a>
-                        <a href={`/dashboard/schemas/${schema.id}/entries`}>View Entries</a>
-                    </div>
-                ))
-            )}
+                <div className='mt-6'>
 
-            <a href="/dashboard/schemas/new">Create New Schema</a>
+                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-foreground">
+                        Your Creative Spaces
+                    </h2>
+                    {tenant.content_schemas?.length === 0 ? (
+                        <NewSchemaCard />
+                    ) : (
+                        <div className="grid gap-4 lg:grid-cols-3">
+                            {tenant.content_schemas?.map((schema: ContentSchemaType) => (
+                                <SchemaCard key={schema.id} schema={schema} onAdd={onAdd(schema.id)} onEdit={onEdit(schema.id)} onView={onView(schema.id)} isActive={true} />
+                            ))}
+                            <NewSchemaCard />
+                        </div>
+                    )}
 
-            <SignOutButton>
-                <button>Sign Out</button>
-            </SignOutButton>
+
+
+                    <SignOutButton>
+                        <button>Sign Out</button>
+                    </SignOutButton>
+                </div>
+            </main>
         </div>
     )
 }

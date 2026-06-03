@@ -1,5 +1,5 @@
 import { ContentEntryType, ContentSchemaType } from '@/app/types/supabaseTypes'
-import React, { FC, Fragment } from 'react'
+import React, { FC } from 'react'
 import FieldRenderer from '../../FieldRenderer';
 
 interface CardProps {
@@ -11,22 +11,21 @@ const Card: FC<CardProps> = ({ entry, schemas }) => {
 
     const schema = schemas.find((s) => s.id === entry.content_schema_id)
 
-    if (!schema) return;
-    return (
-        <Fragment>
-            {
-                schema.fields.map((schemaField) => {
-                    const name = String((schemaField as { name: string }).name);
-                    const type = String((schemaField as { type: string }).type);
-                    const value = String(entry.fields[name] ?? "");
-                    if (!value) return null
-                    return (
-                        <FieldRenderer key={name} fieldKey={name} type={type} value={value} />
-                    )
-                })
+    if (!schema) return null;
+
+    // Build typed fields from actual entry data, using schema only for type lookup
+    const fields = Object.entries(entry.fields)
+        .filter(([_, value]) => value)
+        .map(([fieldKey, value]) => {
+            const schemaField = schema.fields.find(f => f.name === fieldKey)
+            return {
+                fieldKey,
+                type: schemaField?.type ?? 'text',
+                value: String(value)
             }
-        </Fragment>
-    )
+        })
+
+    return <FieldRenderer fields={fields} />
 }
 
 export default Card
