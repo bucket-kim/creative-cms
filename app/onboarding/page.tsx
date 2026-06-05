@@ -11,14 +11,12 @@ const OnboardingPage = () => {
     const router = useRouter()
     const [username, setUsername] = useState("")
     const [name, setName] = useState('')
+    const [schemaName, setSchemaName] = useState('My Projects')
     const [role, setRole] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
     const handleSubmit = async () => {
-        console.log('user:', user)
-        console.log('username:', username)
-        console.log('name:', name)
 
         if (!username || !name || !user) {
             console.log('early return - missing:', { username, name, user: !!user })
@@ -29,13 +27,13 @@ const OnboardingPage = () => {
         setError('')
 
         const supabase = createClient()
-        const { error } = await supabase.from('tenants').upsert({
+        const { data: tenant, error } = await supabase.from('tenants').upsert({
             clerk_id: user.id,
             email: user.emailAddresses[0].emailAddress,
             username,
             name,
             role: role || null
-        }, { onConflict: 'clerk_id' })
+        }, { onConflict: 'clerk_id' }).select('id').single()
 
         if (error) {
             if (error.code === '23505') {
@@ -47,9 +45,20 @@ const OnboardingPage = () => {
             return
         }
 
-        console.log('insert error:', JSON.stringify(error))
-        console.log('user.id:', user.id)
-        console.log('redirecting to dashboard...')
+        await supabase.from('content_schemas').insert({
+            tenant_id: tenant.id,
+            name: schemaName,
+            fields: [
+                { name: 'project_name', type: 'text', required: true },
+                { name: 'description', type: 'text', required: true },
+                { name: 'demo_url', type: 'url', required: false },
+                { name: 'github_url', type: 'url', required: false },
+                { name: 'tech_stack', type: 'tags', required: false },
+                { name: 'published', type: 'boolean', required: false },
+                { name: 'thumbnail', type: 'image', required: false }
+            ]
+        })
+
         router.push("/dashboard")
     }
 
@@ -61,11 +70,19 @@ const OnboardingPage = () => {
             <div>
                 <label>Username</label>
                 <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder='e.g. Jack' />
-                <p>Your public URL: yourplatform.com/{username}</p>
             </div>
             <div>
                 <label>Display Name</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='e.g. John Sparrow' />
+            </div>
+            <div>
+                <label>Portfolio Category Name</label>
+                <input
+                    type="text"
+                    value={schemaName}
+                    onChange={(e) => setSchemaName(e.target.value)}
+                    placeholder='e.g. Creative Projects, Client Work, Experiments'
+                />
             </div>
             <div>
                 <label>Role (optional)</label>

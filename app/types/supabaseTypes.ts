@@ -1,4 +1,6 @@
-export type FieldTypes = "text" | "url" | "tags" | "boolean";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
+export type FieldTypes = "text" | "url" | "tags" | "boolean" | "image";
 
 export interface SchemaField {
   name: string;
@@ -19,7 +21,7 @@ export interface ContentSchemaType {
   tenant_id: string;
   name: string;
   fields: SchemaField[];
-  content_entries?: { id: string }[];
+  content_entries?: Pick<ContentEntryType, "id" | "fields">[];
   created_at: string;
   type: string;
 }
@@ -30,7 +32,7 @@ export interface TenantType {
   name: string;
   role: string;
   bio: string;
-  avatar_url: string | null;
+  avatar_url: string | StaticImport;
   location: string;
   social_links: Record<string, string>;
   content_schemas: ContentSchemaType[];

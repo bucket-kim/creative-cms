@@ -1,10 +1,10 @@
 'use client'
 
 import { TenantType } from "@/app/types/supabaseTypes"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { FC, useState } from "react"
 import { updateProfile } from "./actions"
+import ImageUpload from "../entries/new/ImageUpload"
 
 interface ProfileFormProps {
     tenant: TenantType
@@ -52,10 +52,11 @@ const ProfileForm: FC<ProfileFormProps> = ({ tenant }) => {
             </div>
             <div className="flex flex-col">
                 <label className="text-xl font-bold">Profile Image</label>
-                <input type="text" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://github.com/yourusername.png"
-                />  {avatarUrl && (
-                    <Image src={avatarUrl} alt="avatar preview" width={80} height={80} />
-                )}
+                <ImageUpload
+                    value={avatarUrl}
+                    onChange={(url) => setAvatarUrl(url)}
+                />
+
             </div>
             <div className="flex flex-col">
                 <label className="text-xl font-bold">Current Location</label>

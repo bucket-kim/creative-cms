@@ -2,12 +2,13 @@
 
 import createClient from "@/lib/supabase/server";
 import { auth } from "@clerk/nextjs/server";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 export const updateProfile = async (
   name: string,
   role: string | null,
   bio: string | null,
-  avatar_url: string | null,
+  avatar_url: string | StaticImport,
   location: string | null,
   social_links: Record<string, string>,
 ) => {

@@ -3,12 +3,28 @@
 import createClient from "@/lib/supabase/server";
 import { auth } from "@clerk/nextjs/server";
 
+const defaultFields = [
+  { name: "project_name", type: "text", required: true },
+  { name: "description", type: "text", required: true },
+  { name: "demo_url", type: "url", required: false },
+  { name: "github_url", type: "url", required: false },
+  { name: "tech_stack", type: "tags", required: false },
+  { name: "published", type: "boolean", required: false },
+  { name: "thumbnail", type: "image", required: false },
+];
+
 export async function saveSchema(
   schemaName: string,
-  fields: { name: string; type: string; required: boolean }[],
+  entryData: {
+    project_name: string;
+    description: string;
+    demo_url: string;
+    github_url: string;
+    tech_stack: string;
+    published: string;
+    thumbnail: string;
+  },
 ) {
-  console.log("saveSchema called:", { schemaName, fields });
-
   const { userId } = await auth();
   console.log("userId:", userId);
 
@@ -22,20 +38,27 @@ export async function saveSchema(
     .eq("clerk_id", userId)
     .single();
 
-  console.log("tenant:", tenant);
-  console.log("tenantError:", tenantError);
-
   if (!tenant) return { error: "Tenant not found" };
 
-  const { error } = await supabase.from("content_schemas").insert({
+  const { data: schema, error: schemaError } = await supabase
+    .from("content_schemas")
+    .insert({
+      tenant_id: tenant.id,
+      name: schemaName,
+      fields: defaultFields,
+    })
+    .select("id")
+    .single();
+
+  if (schemaError) return { error: schemaError.message };
+
+  const { error: entryError } = await supabase.from("content_entries").insert({
     tenant_id: tenant.id,
-    name: schemaName,
-    fields: fields,
+    content_schema_id: schema.id,
+    fields: entryData,
   });
 
-  console.log("insert error:", error);
+  if (entryError) return { error: entryError.message };
 
-  if (error) return { error: error.message };
-
-  return { success: true };
+  return { success: true, schemaId: schema.id };
 }

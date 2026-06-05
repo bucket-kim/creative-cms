@@ -25,7 +25,7 @@ const Card: FC<CardProps> = ({ entry, schemas }) => {
             }
         })
 
-    return <FieldRenderer fields={fields} />
+    return <FieldRenderer fields={fields} entryId={entry.id} />
 }
 
 export default Card

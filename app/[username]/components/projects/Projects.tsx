@@ -8,6 +8,7 @@ interface ProjectsProps {
 }
 
 const Projects: FC<ProjectsProps> = ({ schemas, entries }) => {
+
     return (
         <div className='flex flex-col gap-5'>
             {

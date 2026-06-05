@@ -1,16 +1,20 @@
 'use client'
+import { useTheme } from 'next-themes'
 
 import { Blob, DotGrid, FilmGrain, LinearGradient, Liquify, Shader } from 'shaders/react'
 
 const Background = () => {
+
+    const { theme } = useTheme()
+
     return (
         <Shader className='w-full h-full fixed inset-0 -z-10'>
-            <LinearGradient colorA="#f2f4ff"
-                colorB="#eef6ff"
+            <LinearGradient colorA={theme === 'dark' ? "#27282a" : "#f2f4ff"}
+                colorB={theme === 'dark' ? "#1d1f20" : "#eef6ff"}
                 edges='mirror'
                 colorSpace="oklch" />
-            <Blob blendMode='normal-oklch' colorA="#e5e9fd"
-                colorB="#dceafa"
+            <Blob blendMode='normal-oklch' colorA={theme === 'dark' ? "#292a2e" : "#e5e9fd"}
+                colorB={theme === 'dark' ? "#2a2d30" : "#dceafa"}
                 softness={2}
                 colorSpace="oklch" />
             <Liquify />

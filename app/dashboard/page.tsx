@@ -1,6 +1,5 @@
 
 import createClient from '@/lib/supabase/server'
-import { SignOutButton } from '@clerk/nextjs'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { ContentSchemaType } from '../types/supabaseTypes'
@@ -18,7 +17,8 @@ const DashboardPage = async () => {
 
     const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('* , content_schemas(*), content_entries(id)')
+        // .select('* , content_schemas(*, content_entries(id, fields))')
+        .select('* , content_schemas(*), content_entries(*)')
         .eq('clerk_id', userId)
         .single()
 
@@ -33,9 +33,9 @@ const DashboardPage = async () => {
         return `/dashboard/schemas/${id}/entries`
     }
 
-    const onEdit = (id: string) => {
-        return `/dashboard/schemas/${id}/edit`
-    }
+    // const onEdit = (id: string) => {
+    //     return `/dashboard/entries/${id}/edit`
+    // }
 
     return (
         <div className=' min-h-screen'>
@@ -46,10 +46,6 @@ const DashboardPage = async () => {
                     <p className='mt-4  inline-block font-mono text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full tracking-wide'>{tenant.role}</p>
                     <p className='mt-4 text-muted-foreground'>Manage your content schemas and entries</p>
                 </div>
-
-                <a href={`/${tenant.username}`} > View my portfolio ↗</a>
-                <a href="/dashboard/profile">Edit Profile</a>
-
                 <div className='mt-6'>
 
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-foreground">
@@ -60,7 +56,7 @@ const DashboardPage = async () => {
                     ) : (
                         <div className="grid gap-4 lg:grid-cols-3">
                             {tenant.content_schemas?.map((schema: ContentSchemaType) => (
-                                <SchemaCard key={schema.id} schema={schema} onAdd={onAdd(schema.id)} onEdit={onEdit(schema.id)} onView={onView(schema.id)} isActive={true} />
+                                <SchemaCard key={schema.id} schema={schema} entries={tenant.content_entries} onAdd={onAdd(schema.id)} onView={onView(schema.id)} isActive={true} />
                             ))}
                             <NewSchemaCard />
                         </div>
@@ -68,10 +64,8 @@ const DashboardPage = async () => {
 
 
 
-                    <SignOutButton>
-                        <button>Sign Out</button>
-                    </SignOutButton>
                 </div>
+
             </main>
         </div>
     )

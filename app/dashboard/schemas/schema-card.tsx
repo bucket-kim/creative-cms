@@ -1,25 +1,33 @@
 'use client'
 
-import { ContentSchemaType } from '@/app/types/supabaseTypes'
+import { ContentEntryType, ContentSchemaType } from '@/app/types/supabaseTypes'
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { FC } from 'react'
 
 interface SchemaCardProps {
     schema: ContentSchemaType
+    entries: ContentEntryType[]
     onAdd: string
     onView: string
-    onEdit: string
     isActive: boolean
 }
 
-const SchemaCard: FC<SchemaCardProps> = ({ schema, onView, onAdd, onEdit, isActive }) => {
+const SchemaCard: FC<SchemaCardProps> = ({ schema, entries, onView, onAdd, isActive }) => {
     const router = useRouter()
+
+    const filterEntries = entries.filter((entry) => entry.content_schema_id === schema.id)
+
+    const thumbnail = filterEntries[0]?.fields?.thumbnail as string | StaticImport
+
+    // const thumbnail = schema.content_entries?.[0]?.fields.thumbnail as string
+
     return (
         <div className="flex gap-4 rounded-2xl border border-border bg-background p-4 transition-shadow hover:shadow-md">
             <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-accent">
                 <Image
-                    src={"/placeholder.png"}
+                    src={thumbnail || "/placeholder.png"}
                     alt={`${schema.name} thumbnail`}
                     width={112}
                     height={112}
@@ -56,12 +64,6 @@ const SchemaCard: FC<SchemaCardProps> = ({ schema, onView, onAdd, onEdit, isActi
                             View Entries
                         </button>
                     )}
-                    <button
-                        onClick={() => router.push(onEdit)}
-                        className="font-mono text-xs text-primary hover:underline"
-                    >
-                        Edit
-                    </button>
                     {/* <button
                     onClick={() => onDelete(schema.id)}
                     className="font-mono text-xs text-muted-foreground hover:underline"

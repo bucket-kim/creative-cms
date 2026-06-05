@@ -4,6 +4,7 @@ import createClient from '@/lib/supabase/server'
 import React, { FC, Fragment } from 'react'
 import DeleteSchemaButton from './DeleteSchemaButton'
 import DeleteEntryButton from './DeleteEntryButton'
+import Link from 'next/link'
 
 interface EntriesProps {
     params: Promise<{
@@ -27,8 +28,8 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
     }
 
     return (
-        <div className='flex flex-col p-8 gap-5'>
-            <a href="/dashboard">← Back to dashboard</a>
+        <div className='flex flex-col px-24 py-20 gap-5'>
+            <Link href="/dashboard">← Back to dashboard</Link>
 
 
             {schema.content_entries?.length === 0 ? (

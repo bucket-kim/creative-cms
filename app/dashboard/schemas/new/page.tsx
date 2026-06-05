@@ -3,46 +3,32 @@
 import { saveSchema } from './actions'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-
-interface SchemaField {
-    name: string
-    type: 'text' | 'url' | 'tags' | 'boolean'
-    required: boolean
-}
+import TagInput from '../../entries/new/TagInput'
+import ImageUpload from '../../entries/new/ImageUpload'
 
 const NewSchema = () => {
 
     const router = useRouter()
 
     const [schemaName, setSchemaName] = useState("")
-    const [fields, setFields] = useState<SchemaField[]>([])
-    const [currentField, setCurrentField] = useState<SchemaField>({
-        name: '',
-        type: "text",
-        required: false
-    })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-
-    const removeIndex = (index: number) => {
-        setFields((prev) => prev.filter((_, i) => i !== index))
-    }
-
-    const addField = () => {
-        setFields((prev) => [...prev, currentField])
-        setCurrentField({
-            name: "",
-            type: "text",
-            required: false
-        })
-    }
+    const [formData, setFormData] = useState({
+        project_name: '',
+        description: '',
+        demo_url: '',
+        github_url: '',
+        tech_stack: '',
+        published: 'false',
+        thumbnail: ''
+    })
 
     const handleSave = async () => {
 
         setLoading(true)
         setError("")
 
-        const result = await saveSchema(schemaName, fields)
+        const result = await saveSchema(schemaName, formData)
 
         if (result.error) {
             setError(result.error)
@@ -52,12 +38,10 @@ const NewSchema = () => {
 
         // reset all state after successful save
         setSchemaName("")
-        setFields([])
-        setCurrentField({ name: "", type: "text", required: false })
         setLoading(false)
 
 
-        router.push('/dashboard')
+        router.push(`/dashboard/schemas/${result.schemaId}/entries`)
     }
 
     return (
@@ -66,35 +50,34 @@ const NewSchema = () => {
                 <label>Your Role</label>
                 <input value={schemaName} onChange={(e) => setSchemaName(e.target.value)} />
             </div>
-            <div>
-                <input value={currentField.name} onChange={(e) => {
-
-
-                    setCurrentField((prev) => ({
-                        ...prev,
-                        name: e.target.value
-                    }))
-                }} />
-                <select value={currentField.type} onChange={(e) => {
-
-                    setCurrentField((prev) => ({
-                        ...prev,
-                        type: e.target.value as SchemaField['type']
-                    }))
-                }}>
-                    <option>text</option>
-                    <option>url</option>
-                    <option>tags</option>
-                    <option>boolean</option>
-                </select>
-                <input type='checkbox' checked={currentField.required} onChange={(e) => setCurrentField((prev) => ({ ...prev, required: e.target.checked }))} />
-                <button onClick={() => addField()}>Add Field</button>
-            </div>
-            {fields.length > 0 && fields.map((field, index) => (
-                <div key={index}>
-                    <span>{field.name}</span>
-                    <span>{field.type}</span>
-                    <button onClick={() => removeIndex(index)}>Remove</button>
+            {Object.entries(formData).map(([key, value]) => (
+                <div key={key}>
+                    <label>{key}</label>
+                    {key === 'published' ? (
+                        <input
+                            type='checkbox'
+                            checked={value === 'true'}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                published: e.target.checked.toString()
+                            }))}
+                        />
+                    ) : key === 'tech_stack' ? (
+                        <TagInput
+                            value={value}
+                            onChange={(val) => setFormData(prev => ({ ...prev, tech_stack: val }))}
+                        />
+                    ) : key === "thumbnail" ? (
+                        <ImageUpload value={value} onChange={(url) => setFormData(prev => ({ ...prev, thumbnail: url }))} />
+                    ) : (
+                        <input
+                            value={value}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                [key]: e.target.value
+                            }))}
+                        />
+                    )}
                 </div>
             ))}
             {error && <p>{error}</p>}

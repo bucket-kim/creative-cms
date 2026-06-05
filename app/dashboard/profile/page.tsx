@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import ProfileForm from './ProfileForm'
+import Link from 'next/link'
 
 const ProfilePage = async () => {
 
@@ -23,7 +24,7 @@ const ProfilePage = async () => {
 
     return (
         <div>
-            <a href="/dashboard">← Back to dashboard</a>
+            <Link href="/dashboard">← Back to dashboard</Link>
             <h1>Edit Profile</h1>
             <ProfileForm tenant={tenant} />
         </div>
