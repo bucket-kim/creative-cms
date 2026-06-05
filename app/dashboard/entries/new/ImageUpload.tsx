@@ -49,7 +49,7 @@ const ImageUpload: FC<ImageUploadProps> = ({ value, onChange }) => {
                 accept="image/*"
                 onChange={handleUpload}
                 disabled={uploading}
-                className="cursor-pointer"
+                className="cursor-pointer shadow border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
             />
             {uploading && <p>Uploading...</p>}
             {error && <p>{error}</p>}

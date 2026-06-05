@@ -29,7 +29,7 @@ const DeleteSchemaButton: FC<DeleteSchemaButtonProps> = ({ schemaId }) => {
 
     return (
         <button className='cursor-pointer' onClick={handleDelete}>
-            Delete Schema
+            Delete Page
         </button>
     )
 }

@@ -38,15 +38,14 @@ const DashboardPage = async () => {
     // }
 
     return (
-        <div className=' min-h-screen'>
-
-            <main className='px-16 py-16'>
-                <div className='mb-6'>
+        <div className='h-screen'>
+            <main className='px-16'>
+                <div className='mb-6 flex flex-col gap-4 items-start'>
                     <h1 className='className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-foreground"'>Welcome back, {tenant.name}!</h1>
                     <p className='mt-4  inline-block font-mono text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full tracking-wide'>{tenant.role}</p>
-                    <p className='mt-4 text-muted-foreground'>Manage your content schemas and entries</p>
+                    <p className='mt-4 text-muted-foreground'>Manage your project and share your experiences</p>
                 </div>
-                <div className='mt-6'>
+                <div className='flex flex-col gap-6'>
 
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-foreground">
                         Your Creative Spaces

@@ -1,10 +1,11 @@
 import Card from '@/app/[username]/components/projects/Card/Card'
 import { ContentEntryType, ContentSchemaType } from '@/app/types/supabaseTypes'
 import createClient from '@/lib/supabase/server'
-import React, { FC, Fragment } from 'react'
+import React, { FC, Fragment, ReactNode } from 'react'
 import DeleteSchemaButton from './DeleteSchemaButton'
 import DeleteEntryButton from './DeleteEntryButton'
 import Link from 'next/link'
+import { CheckIsOwner } from '@/app/shared/CheckIsOwner'
 
 interface EntriesProps {
     params: Promise<{
@@ -15,6 +16,8 @@ interface EntriesProps {
 const Entries: FC<EntriesProps> = async ({ params }) => {
 
     const { schemaId } = await params
+
+    const { isOwner } = await CheckIsOwner()
 
     const supabase = await createClient();
 
@@ -28,7 +31,7 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
     }
 
     return (
-        <div className='flex flex-col px-24 py-20 gap-5'>
+        <div className='flex flex-col px-20 gap-5'>
             <Link href="/dashboard">← Back to dashboard</Link>
 
 
@@ -38,18 +41,27 @@ const Entries: FC<EntriesProps> = async ({ params }) => {
                     <a href={`/dashboard/entries/new?schemaId=${schema.id}`}>Add Entry</a>
                 </Fragment>
             ) : (
-                schema.content_entries?.map((entry: ContentEntryType) => (
-                    <div key={entry.id} className='flex flex-col gap-5'>
-                        <h1 className='font-[family-name:var(--font-display)] text-xl font-semibold text-foreground mb-3'>{schema.name}</h1>
-                        <Card entry={entry} schemas={[schema as ContentSchemaType]} />
-                        <div className='flex gap-4 mt-4'>
-                            <a href={`/dashboard/entries/${entry.id}/edit`}>Edit Entry</a>
-                            <DeleteEntryButton entryId={entry.id} />
+                schema.content_entries?.map((entry: ContentEntryType) => {
+
+                    const projectName = entry.fields.project_name as ReactNode
+
+                    return (
+                        <div key={entry.id} className='flex flex-col gap-5'>
+                            <h1 className='font-[family-name:var(--font-display)] text-xl font-semibold text-foreground mb-3'>{projectName}</h1>
+                            <Card entry={entry} schemas={[schema as ContentSchemaType]} />
+                            {isOwner && (
+                                <div className='flex gap-4 mt-4'>
+                                    <a href={`/dashboard/entries/${entry.id}/edit`}>Edit Entry</a>
+                                    <DeleteEntryButton entryId={entry.id} />
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))
+                    )
+                })
             )}
-            <DeleteSchemaButton schemaId={schema.id} />
+            {isOwner && (
+                <DeleteSchemaButton schemaId={schema.id} />
+            )}
         </div>
     )
 }

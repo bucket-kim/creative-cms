@@ -45,10 +45,10 @@ const NewSchema = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className='w-200 px-16'>
+            <div className='flex flex-col '>
                 <label>Your Role</label>
-                <input value={schemaName} onChange={(e) => setSchemaName(e.target.value)} />
+                <input className="shadow border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline" value={schemaName} onChange={(e) => setSchemaName(e.target.value)} />
             </div>
             {Object.entries(formData).map(([key, value]) => (
                 <div key={key}>
@@ -69,8 +69,19 @@ const NewSchema = () => {
                         />
                     ) : key === "thumbnail" ? (
                         <ImageUpload value={value} onChange={(url) => setFormData(prev => ({ ...prev, thumbnail: url }))} />
+                    ) : key === "description" ? (
+                        <textarea
+                            className="shadow border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline resize-none"
+                            rows={5}
+                            value={value}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                [key]: e.target.value
+                            }))}
+                        />
                     ) : (
                         <input
+                            className="shadow border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
                             value={value}
                             onChange={(e) => setFormData(prev => ({
                                 ...prev,

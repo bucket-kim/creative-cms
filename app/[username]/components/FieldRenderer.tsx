@@ -3,6 +3,7 @@
 import { FC } from 'react'
 import { FieldTypes } from '@/app/types/supabaseTypes';
 import IframeViewer from './IframeViewer';
+import { useGlobalState } from '@/app/state/useGlobalState';
 
 interface FieldItem {
     fieldKey: string;
@@ -23,7 +24,15 @@ const FieldRenderer: FC<FieldRendererProps> = ({ fields, entryId }) => {
     const publishedField = fields.find(f => f.type === 'boolean')
     const thumbnailField = fields.find(f => f.type === 'image')
 
-    console.log(fields)
+    const { setIsIframeActive } = useGlobalState(
+        (state) => ({
+            setIsIframeActive: state.setIsIframeActive
+        })
+    )
+
+    const handleClose = () => {
+        setIsIframeActive(null)
+    }
 
     return (
         <article className={"bg-card border border-border rounded-xl p-8 hover:shadow-md transition-shadow"} >
@@ -34,12 +43,19 @@ const FieldRenderer: FC<FieldRendererProps> = ({ fields, entryId }) => {
                 {/* Hover overlay with CTA */}
             </div>
 
+
             {/* Card content */}
-            <div className="p-6">
-                <div>
+            <div className="flex flex-col gap-6 pt-6">
+                <div className='flex gap-2'>
+                    <a href={urlField?.value} target="_blank" rel="noopener noreferrer">
+                        Open in new tab ↗
+                    </a>
+                    <button onClick={handleClose}>Close preview</button>
+                </div>
+                <div className='flex flex-col gap-6'>
 
                     {tagsField && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2">
                             {tagsField.value.split(",").map((tag) => (
                                 <span
                                     key={tag.trim()}
@@ -50,16 +66,17 @@ const FieldRenderer: FC<FieldRendererProps> = ({ fields, entryId }) => {
                             ))}
                         </div>
                     )}
-                    {publishedField ? <span>yes</span> : <span>no</span>
+                    {publishedField ? <span>published</span> : <span>not published</span>
                     }
                 </div>
 
                 {/* Description from text field */}
                 {textField && (
-                    <p className="font-sans text-sm text-muted-foreground leading-relaxed">
+                    <p className="font-sans text-sm text-muted-foreground leading-relaxed ">
                         {textField.value}
                     </p>
                 )}
+
             </div>
         </article>
     )

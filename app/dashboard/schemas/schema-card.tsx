@@ -4,7 +4,7 @@ import { ContentEntryType, ContentSchemaType } from '@/app/types/supabaseTypes'
 import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 
 interface SchemaCardProps {
     schema: ContentSchemaType
@@ -21,6 +21,8 @@ const SchemaCard: FC<SchemaCardProps> = ({ schema, entries, onView, onAdd, isAct
 
     const thumbnail = filterEntries[0]?.fields?.thumbnail as string | StaticImport
 
+    const entryTitle = filterEntries[0]?.fields?.project_name as ReactNode
+
     // const thumbnail = schema.content_entries?.[0]?.fields.thumbnail as string
 
     return (
@@ -28,7 +30,7 @@ const SchemaCard: FC<SchemaCardProps> = ({ schema, entries, onView, onAdd, isAct
             <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-accent">
                 <Image
                     src={thumbnail || "/placeholder.png"}
-                    alt={`${schema.name} thumbnail`}
+                    alt={`${entryTitle} thumbnail`}
                     width={112}
                     height={112}
                     className="h-full w-full object-cover"
@@ -39,7 +41,7 @@ const SchemaCard: FC<SchemaCardProps> = ({ schema, entries, onView, onAdd, isAct
                     <div>
 
                         <h3 className="text-lg font-semibold text-blue-600 dark:text-sky-400">
-                            {schema.name}
+                            {entryTitle}
                         </h3>
                         <span
                             className={`mt-1.5 inline-block rounded-md bg-[#EAE5FB] px-2 py-0.5 font-mono text-xs text-[#145DFB]"
@@ -61,7 +63,7 @@ const SchemaCard: FC<SchemaCardProps> = ({ schema, entries, onView, onAdd, isAct
                             onClick={() => router.push(onView)}
                             className="font-mono text-xs text-secondary-foreground hover:underline"
                         >
-                            View Entries
+                            View Project
                         </button>
                     )}
                     {/* <button

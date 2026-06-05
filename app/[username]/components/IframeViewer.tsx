@@ -44,13 +44,7 @@ const IframeViewer: FC<IframeViewerProps> = ({ url, thumbnail, entryId }) => {
         setLoading(false)
     }
 
-    const handleClose = () => {
-        if (!timerRef.current) return
-        setIsIframeActive(null)
-        setHasError(false)
-        setLoading(false)
-        clearTimeout(timerRef.current)
-    }
+
 
     return (
         <div className='absolute inset-0'>
@@ -85,12 +79,7 @@ const IframeViewer: FC<IframeViewerProps> = ({ url, thumbnail, entryId }) => {
                         />
                     )}
 
-                    <div className='absolute bottom-2 right-2 flex gap-2'>
-                        <a href={url} target="_blank" rel="noopener noreferrer">
-                            Open in new tab ↗
-                        </a>
-                        <button onClick={handleClose}>Close preview</button>
-                    </div>
+
                 </div>
             )}
 

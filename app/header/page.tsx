@@ -13,13 +13,26 @@ const Header = async () => {
 
     const { data: tenant } = await supabase.from('tenants').select('*').eq('clerk_id', userId).single()
 
+    if (!tenant) {
+        return (
+            <div className='w-full h-20 flex items-center justify-between px-16'>
+                <Link href={`${tenant?.username}`}>
+                    <Image src={"/img/kinect_logo.png"} height={30} width={30} alt='logo' className='mix-blend-multiply' />
+                </Link>
+                <header className='flex gap-4'>
+                    <Link href="/sign-in">Sign In</Link>
+                    <Link href="/sign-up">Get Started</Link>
+                </header>
+            </div>
+        )
+    }
 
     return (
-        <div className='absolute top-0 left-0 w-full h-16 flex items-center justify-between px-16'>
-            <Link href={"/dashboard"}>
-
+        <div className='w-full h-20 flex items-center justify-between px-16'>
+            <Link href={`${tenant.username}`}>
                 <Image src={"/img/kinect_logo.png"} height={30} width={30} alt='logo' className='mix-blend-multiply' />
             </Link>
+
             <div className='flex gap-4'>
                 <SignOutButton>
                     <button className='cursor-pointer'>Sign Out</button>

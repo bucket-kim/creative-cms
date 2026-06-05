@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/client";
+import Header from "./header/page";
 
 export default async function Home() {
   const supabase = createClient()
 
-  const { data, error } = await supabase.from('tenants').select("*")
+  const { error } = await supabase.from('tenants').select("*")
 
   if (error) {
     return <div>Error: {error.message}</div>
@@ -11,8 +12,12 @@ export default async function Home() {
 
 
   return (
-    <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+    <div >
+      <Header />
+      <h1 className="absolute font-bold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10rem] flex flex-col items-center leading-[100%]">
+        <span>CREATIVE</span>
+        <span>CMS</span>
+      </h1>
     </div>
   );
 }

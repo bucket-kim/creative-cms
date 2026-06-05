@@ -36,8 +36,9 @@ const TagInput: FC<TagInputProps> = ({ value, onChange }) => {
                     </span>
                 ))}
             </div>
-            <div>
+            <div className="flex gap-2">
                 <input
+                    className="shadow border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={(e) => {
