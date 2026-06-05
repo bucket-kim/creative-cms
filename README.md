@@ -10,7 +10,7 @@ A headless CMS platform built specifically for creative developers — WebGL eng
 
 ## The Problem
 
-Creative developers build experiences that can't be captured in a screenshot.
+Creative developers build experiences that can't be captured in screenshots.
 
 Platforms like ArtStation and Behance are designed for visual artists — images, renders, concept art. They work well for what they're designed for. But a Three.js fluid simulation, a WebGL particle system, or a GSAP scroll experience loses everything when you reduce it to a static image. The interaction is the work.
 
