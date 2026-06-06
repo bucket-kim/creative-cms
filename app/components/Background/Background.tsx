@@ -24,7 +24,7 @@ const Background = () => {
                 density={50}
                 dotSize={0.15}
                 blendMode="screen"
-                opacity={0.5}
+                opacity={0.45}
             />
             {isDark ? null : (
                 <FilmGrain />
