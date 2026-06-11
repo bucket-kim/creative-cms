@@ -2,7 +2,7 @@
 
 A headless CMS platform built specifically for creative developers — WebGL engineers, Three.js artists, GSAP animators, and interactive coders — who need a portfolio that goes beyond static images.
 
-A new way to connect creative developers and bridge two worlds.
+<!-- A new way to connect creative developers and bridge two worlds. -->
 
 **Live Demo:** [kinect-cms.vercel.app](https://kinect-cms.vercel.app)
 **GitHub:** [github.com/bucket-kim/creative-cms](https://github.com/bucket-kim/creative-cms)
